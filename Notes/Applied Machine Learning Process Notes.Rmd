@@ -1,0 +1,53 @@
+---
+title: "Applied Machine Learning Process"
+author: "Kelsea Denny"
+date: "2/15/2020"
+output: html_document
+---
+
+
+
+This report includes notes on a process used to solve machine learning problems. The goal is to achieve a deep understanding of the process while tweeking it to match my own methods.  
+  
+  
+
+## 1. Define Your problem
+
+Defining the problem and identifing whether it is applicable to machine learning is further broken down into 3 questions.  
+
+  + Question 1. What is the problem?  
+  + Question 2. Why does the problem need to be solved?  
+  + Question 3. How would I solve the problem?  
+
+### Question 1. What is the problem?
+
+> Start with an **Informal Description**. Like, "I need to know what advertising formats will result in more traffice to my webpage"  
+
+> Then move to a **Formalized Description**. It is recommended to use *Tom Mitchell's* machine learning formalism  
+
+" A computer program is said to learn from experience **E** with respect to some class of tasks **T** and performance measure **P**, if its performance at tasks T, as measured by P, improves with experience E. "  
+
+Continuing with the example:  
+
++ **Task (T)**: Classify an ad that has not been published as receiving clicks or not.
+
++ **Experience (E)**: Experience comes from a collection of ads and the the results of their campaign. Should include campaigns with extremely high performance and extemely low performance.
+
++ **Performance (P)**: Classification accuracy, the number of ad campaigns predicted correctly out of all ads considered as a percentage.  
+
+
+> Start to create a **List of Assumptions** about the data and the results. So I would be identifing which ads will pull in the most traffic, by identifying ad features, campaign time frame, target poplulation etc.  
+
+> Then find **Similar Problems** that I have either seen or can think of that relate to the current problem. This could help create other points of view where the data could be tuned or approached differently.
+
+### Question 2: Why does the problem need to be solved?  
+
+> It's important to identify the **Motivation** behind the problem. Am I using it to learn? If so, does the method for finding the solution fall in line with that. Or, is it for work?  
+
+> Will the solution have any **Benefits**? If so, who or what will it benefit.
+
+> Lastly, how will the solution be **Used**? What is the lifetime and will it require future maintenance?  
+
+### Question 3: How would I solve the problem?  
+
+> *List out step-by-step what data you would collect, how you would prepare it and how you would design a program to solve the problem. This may include prototypes and experiements you would need to perform which are a gold mine because they will highlight questions and uncertainties you have about the domain that could be explored.*
