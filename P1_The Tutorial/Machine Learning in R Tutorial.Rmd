@@ -1,0 +1,114 @@
+---
+title: "First Machine Learning Project Step-By-Step"
+output: html_notebook
+---
+
+## Getting Started
+
+> This is just me doing the step-by-step tutorial of machine learning with R from machinelearningmastery.com. 
+
+**Intall Packages**
+
+```{r}
+install.packages("caret")
+```
+
+> Caret is short for Classification and Regression Training. It comes with a set of functions to create predictive models. This includes:
+
++ Data Splitting
++ Pre-Processing
++ Feature Selection
++ Model Tuning Using Resampling
++ Variable Importance Estimation
+
+**Load the Library**
+
+```{r}
+library(caret)
+```
+
+**Load The Data**
+
+> This tutorial uses the iris flowers dataset. This is the "hello world" of machine learning data sets so and is actually fairly easy to load with R Studio, but for the sake of a real life experience I will load the data via a downloaded CSV file and load it that way.
+
+```{r}
+# define the filename
+filepath <- paste(getwd(), "/raw_data/iris.csv", sep="")
+# load the CSV file from the local directory
+dataset <- read.csv(filepath, header=FALSE)
+# set the column names in the dataset
+colnames(dataset) <- c("Sepal.Length","Sepal.Width","Petal.Length","Petal.Width","Species")
+```
+
+> I altered the code a little bit to account for the filepath, so I pasted the working directory with the rest of the filepath. Be sure to check your working directory prior to running the code.
+
+**Create a Validation Dataset**
+
+> So this part is just breaking up the data so that we have some data for the training dataset and other data for the validation. The validation is meant to determine how accurate the best model is. So in this tutorial 80% of the data is used for training, while 20% is for validation
+
+```{r}
+# create a list of 80% of the rows in the original dataset we can use for training
+validation_index <- createDataPartition(dataset$Species, p=0.80, list=FALSE)
+# select 20% of the data for validation
+validation <- dataset[-validation_index,]
+# use the remaining 80% of data to train and test the models
+dataset <- dataset[validation_index,]
+```
+
+> The original dataset had 150 objects. Looking at the global environment window I now see that dataset has 120 objects and validation has only 30. So it worked.
+
+**Summarize Dataset**
+
+> This step is a guide on how to look through the data and get a visual on it. I did find that some packages required for this part were not installed on my system yet so I had to install them. So I'm pretty sure you need ggplot and ellipse. Not sure if you need anything else.
+
+> These are the different ways we will be looking at the data
+
++ Dimensions of the dataset
++ Types of the attributes
++ Peek at the data itself
++ Levels of the class attribute
++ Breakdown of the instances in each class
++ Statistical sumary of all attributes
+
+**Dimensions of Dataset**
+
+```{r}
+# dimensions of dataset
+dim(dataset)
+```
+
+> You should see 120 instances and 5 attributes. This information can also be found in the global environment window on the right.
+
+**Types of Attributes**
+
+> Knowing the types of the attributes is a good idea, because it can help identify which types of transforms you might need in order to prepare the data before modeling it.
+
+```{r}
+# list types for each attribute
+sapply(dataset, class)
+```
+
+> If done correctly you should see four "numeric" types and one "factor" type. 
+
+**Peek at the Data**
+
+> This will give you an idea of how the data looks. Keep in mind that it only shows the first 5 rows.
+
+```{r}
+# take a peek at the first 5 rows of the data
+head(dataset)
+```
+
+**Levels of the Class**
+
+> The class variable is a factor. A factor is a class that has multiple class labels or levels. We can check to see how many levels there are and what they are
+
+```{r}
+# list the levels for the class
+levels(dataset$Species)
+```
+
+If done correctly you will see 3 different labels. These are the levels.
+
+**Class Distribution**
+
