@@ -1,0 +1,26 @@
+---
+title: "Model Accuracy and Data Pre-Processing"
+author: "Kelsea Denny"
+date: "2/17/2020"
+output: html_document
+---
+
+## Data Preparation
+
+> My understanding is that machine learning algorithms can be sensitive or fragile, in a sense. Which is why it is important to pre-process the raw data. The type of pre-processing is also important to consider when applying the data to specific algorithms. There are three types of pre-processing.
+
++ Add attributes to your data
++ Remove attributes from your data
++ Transform attributes in your data
+
+### Add Attributes to your Data
+
+> Some training data could reveal the need to add more attributes to the modeling process some of these include **Dummy Attributes** which can be categorical attributes that are converted into an n-binary attribute. I guess, an example of that is the the species from the iris dataset, and breaking that down into binary attributes. I don't know if that is an advisable action with that dataset, but it's an example. The **Transform Attribute** is also a way to add attributes to the dataset. This includes simple transforms like log, square roots etc. It's something to experiment with to see if there are any discernible patterns. Lastly is adding **Missing Data** using a method that makes sense. The example provided is using the k-nearest neghbors. 
+
+### Remove Data Attributes
+
+> Duplicate attributes can cause some methods to perform poorly. Removing these attributes can improve accuracy and performance significantly. Methods listed in this article are actually new to me so I will look more deeply into them. The first is **Projection**. The article suggests that Principal Component Analysis (PCA) is a popular approach to projecting training data into a lower dimensional space. **Spatial Sign** gets even more interesting because it is a projection of data onto the surface of a multidimensional sphere. This method is meant to find outliers that can then be removed. Lastly **Correlated Attributes** are simply attributes that closely correlate to each other. These attributes can be deleted, because they don't add any significance to the data.
+
+### Transform Data Attributes
+
+> So rather than adding tranformed attributes, keyword adding. You are transforming the data that is already present. The methods provided include **Centering**. Centering is transforming the data so the mean is zero with a standard deviation of one. Also known as data standardization. Next is **Scaling**. This requires mapping the data from the original scale to a scale between zero and one. Also known as data normalization. **Remove Skew** is the next method. Removing values that are largely in one direction helps remove the skew. **Box-Cox** transforms can be used to reliably adjust data to remove skew. Lastly, **Binning**, which is taking numeric data, and making it discrete by grouping the values into bins. This is also called data discretization, and can be performed manually.
