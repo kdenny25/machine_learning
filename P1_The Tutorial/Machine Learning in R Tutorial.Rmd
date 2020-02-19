@@ -108,7 +108,26 @@ head(dataset)
 levels(dataset$Species)
 ```
 
-If done correctly you will see 3 different labels. These are the levels.
+> If done correctly you will see 3 different labels. These are the levels.
 
 **Class Distribution**
+
+> Class distribution will show the number of rows associated to each class. In this example we will see the total number of each along with a percentage of the total  number of objects.
+
+```{r}
+# summarize the class distribution
+percentage <- prop.table(table(dataset$Species)) * 100
+cbind(freq=table(dataset$Species), percentage=percentage)
+```
+
+**Statistical Summary**
+
+> Now we look at the summary this will show the mean, min and max values and percentiles.
+
+```{r}
+# summarize attribute distribution
+summary(dataset)
+```
+
+**Visualize Dataset**
 
