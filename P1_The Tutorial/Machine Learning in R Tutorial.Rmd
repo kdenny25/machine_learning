@@ -131,3 +131,64 @@ summary(dataset)
 
 **Visualize Dataset**
 
+> Looking at numbers is one thing, but vizualizing the data can help create a better picture. This tutorial walks through two types of plots, the univariate plot and the multivariate plot.
+
+**Univariate Plots**
+
+> Univariate plots are used to plot individual variables. With this example we split the data up into input attributes (x) and output attributes (y). 
+
+```{r}
+# split input and output
+x <- dataset[,1:4]
+y <- dataset[,5]
+```
+
+Once we separate the attributes, the data can then be used to create a box and whisker plot.
+
+```{r}
+# boxplot for each attribute on one image
+par(mfrow=c(1,4))
+  for(i in 1:4) {
+    boxplot(x[,i], main=names(iris)[i])
+  }
+```
+
+> The tutorial then goes on to create a barplot, but since there are an even number of each output the isn't much to decern from the plot.
+
+```{r}
+# barplot for class breakdown
+plot(y)
+```
+
+
+**Multivariate Plots**
+
+>These show the interactions between the variables. Before jumping into this next plot, I ran into an issue where it was not showing up correctly. The simple solution was needing to install the "ellipse" package. I'll go ahead and put that in below.
+
+```{r}
+# install ellipse package
+install.packages("ellipse")
+```
+
+> Once installed you can now create the scatterplot matrix.
+
+```{r}
+# scatterplot matrix
+featurePlot(x=x, y=y, plot="ellipse")
+```
+
+> We can also look at a multivariate box and whisker plot. This time it breaks down each input variable.
+
+```{r}
+# box and whisker plots for each attribute
+featurePlot(x=x, y=y, plot="box")
+```
+
+> Next we can look at density plots for each attribute
+
+```{r}
+# density plots fro each attribute by class value
+scales <- list(x=list(relation="free"), y=list(relation="free"))
+featurePlot(x=x, y=y, plot="density", scales=scales)
+```
+
