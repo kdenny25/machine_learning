@@ -192,3 +192,77 @@ scales <- list(x=list(relation="free"), y=list(relation="free"))
 featurePlot(x=x, y=y, plot="density", scales=scales)
 ```
 
+**Evaluate Some Algorithms**
+
+>This part we create some models and estimate their accuracy on unseed data. The steps covered are:
+
+1. Set-up the test harness to use 10-fold cross validation.
+2. Build 5 different models to predict specieis from flower measurements.
+3. Select the best model.
+
+>10-fold crossvalidation is used to estimate the accuracy. This means the data will be split into 10 parts. 9 will be trained and 1 will be tested. This process will be repeated 3 times for each algorithm.
+
+```{r}
+# Run algorithms using 10-fold cross validation
+control <- trainControl(method="cv", number=10)
+metric <- "Accuracy"
+```
+
+>The metric of "Accuracy" is used to evaluate the models. This is a ratio of the number of correctly predicted instances in, divided by the total number of instances in the dataset, multiplied by 100 to give a percentage.
+
+**Build Models**
+
+>5 different algorithms are evaluated in this tutorial.
+
++ Linear Discrimant Analysis (LDA)
++ Classification and Regression Trees (CART)
++ k-Nearest Neighbors (kNN)
++ Support Vector Machines (SVM) with a linear kernal
++ Random Forest (RF)
+
+> The random seed is reset before each run to ensure that the valuation of each algorithm is performed using exactly the same data splits. It ensures the results are directly comparable.
+
+> Before moving forward make sure you have the e1071, kernlab, randomForest,package installed
+
+```{r}
+install.packages("e1071", "kernlab", "randomForest")
+```
+
+> Once installed, you should be ready to run the below code.
+
+
+```{r}
+# a) linear algorithms
+set.seed(7)
+fit.lda <- train(Species~., data=dataset, method="lda", metric=metric, trControl=control)
+# b) nonlinear algorithms
+# CART
+set.seed(7)
+fit.cart <- train(Species~., data=dataset, method="rpart", metric=metric, trControl=control)
+#kNN
+set.seed(7)
+fit.knn <- train(Species~., data=dataset, method="knn", metric=metric, trControl=control)
+# c) advanced algorithms
+#SVM
+set.seed(7)
+fit.svm <- train(Species~., data=dataset, method="svmRadial", metric=metric, trControl=control)
+# Random Forest
+set.seed(7)
+fit.rf <- train(Species~., data=dataset, method="rf", metric=metric, trControl=control)
+```
+
+> Now we need to report on the models to determine the more accurate one.
+
+```{r}
+# summarize accuracy of models
+results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+```
+
+> Results are then summarized using plots
+
+```{r}
+# compare accuracy of models
+dotplot(results)
+```
+
