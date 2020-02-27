@@ -283,3 +283,10 @@ confusionMatrix(predictions, validation$Species)
 ```
 
 
+##Summary##
+
+> Ok, being that this is the first Machine Learning program that I have completed, I need to summarize what just happened. First, I loaded the data for the Iris dataset. It's important to look at and understand the data so we know how to configure it for the tests. Next, 20% of the data was removed from the dataset and saved for later. This is considered the validation dataset and was used to double check the accuracy of the algorithms later on. 
+
+> Once the data was organized and separated, then several algorithms needed to be tested. To note, the computer was learning to predict the type of flower based on the petal and sepal shape. So I'm assume it could use this data to visually identify the type of flower if computer vision was in place.
+
+> Anyways, the algrithms were tested and the most accurate one was used next to the validation set to make a prediction. The results were positive.
