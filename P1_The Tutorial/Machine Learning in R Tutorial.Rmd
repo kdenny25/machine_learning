@@ -273,7 +273,7 @@ dotplot(results)
 print(fit.lda)
 ```
 
-##Make Predictions##
+**Make Predictions**
 
 > The LDA was the most accurate model. So now we need to double check it's accuracy by testing it against the validation set we created earlier. The LDA Model will be ran directly on the validation set and the results will be summarized in a confusion matrix.
 
@@ -283,7 +283,7 @@ confusionMatrix(predictions, validation$Species)
 ```
 
 
-##Summary##
+**Summary**
 
 > Ok, being that this is the first Machine Learning program that I have completed, I need to summarize what just happened. First, I loaded the data for the Iris dataset. It's important to look at and understand the data so we know how to configure it for the tests. Next, 20% of the data was removed from the dataset and saved for later. This is considered the validation dataset and was used to double check the accuracy of the algorithms later on. 
 

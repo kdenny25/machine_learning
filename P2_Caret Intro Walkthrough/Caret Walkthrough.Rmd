@@ -1,0 +1,62 @@
+---
+title: "Caret Package Walkthrough"
+output: html_notebook
+---
+
+##Loading the Dataset##
+
+> First thing is first, we need to load the data. This walkthrough introduces the **mlbench** package. Mlbench is a collection of artificial and real-world machine learning benchmark problems, including several data sets from the UCI repository. Which is great. This just makes life easier when practicing machine learning.
+
+> This walkthrough uses the **Sonar** data set. It consists of 208 data points collected on 60 predictors. The goal is to predict the two classes **M** for metal cylinder or **R** for cylinder shaped rock.
+
+**Split the Data into Two Groups**
+
+```{r}
+library(caret)
+library(mlbench)
+data(Sonar)
+
+set.seed(107)
+inTrain <- createDataPartition(
+  y = Sonar$Class,
+  ## the outcome data are needed
+  p = .75,
+  ## the percentage of data in the training set
+  list = FALSE
+)
+## The format of the results
+
+## The output is a set of integers fro the rows of Sonar
+## that belong in the training set.
+str(inTrain)
+#> int [1:157, 1] 1 2 3 4 5 7
+#> - attr(*, "dimnames")=list of 2
+#> ..$ : NULL
+#> ..$ : chr "Resample1"
+```
+
+> **createDataPartition** does a stratified random split of the data.
+
+```{r}
+training <- Sonar[ inTrain, ]
+testing  <- Sonar[-inTrain, ]
+
+nrow(training)
+#> [1] 157
+nrow(testing)
+#> [1] 51
+```
+
+> Next a partial least squares discriminant analysis (PLSDA) model will be tudned over the number of PLS components that should be retained.
+
+```{r}
+plsFit <- train( Class ~., data = training, method = "pls",
+                 ## Center and scale the predictors for the training
+                 ## set and all future samples.
+                 preProc = c("center", "scale")
+                 )
+```
+
+
+> At this point the model can be customized. The walkthrough recommends expanding the PLS models, changing the type of resample from bootstrap to three repeats of 10-fold cross-validation and changing the methods for measuring performance. Normally the root mean square error and R^2 are computed, but it will need to change to estimate the area under the ROC curve. 
+
