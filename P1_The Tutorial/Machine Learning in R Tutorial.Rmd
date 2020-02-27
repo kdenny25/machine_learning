@@ -266,3 +266,20 @@ summary(results)
 dotplot(results)
 ```
 
+> Summarize the results from the LDA model
+
+```{r}
+# summarize Best Model
+print(fit.lda)
+```
+
+##Make Predictions##
+
+> The LDA was the most accurate model. So now we need to double check it's accuracy by testing it against the validation set we created earlier. The LDA Model will be ran directly on the validation set and the results will be summarized in a confusion matrix.
+
+```{r}
+predictions <- predict(fit.lda, validation)
+confusionMatrix(predictions, validation$Species)
+```
+
+
