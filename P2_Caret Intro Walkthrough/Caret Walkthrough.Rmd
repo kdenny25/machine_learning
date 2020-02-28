@@ -60,3 +60,42 @@ plsFit <- train( Class ~., data = training, method = "pls",
 
 > At this point the model can be customized. The walkthrough recommends expanding the PLS models, changing the type of resample from bootstrap to three repeats of 10-fold cross-validation and changing the methods for measuring performance. Normally the root mean square error and R^2 are computed, but it will need to change to estimate the area under the ROC curve. 
 
+> tuneLength=15 is used to evaluate all integers between 1 and 15.
+
+```{r}
+plsFit <- train(Class ~., data = training, method = "pls", preProc = c("center", "scale"),
+                ## added:
+                tuneLength = 15
+                )
+```
+
+> Next, the resampling method needs to be changed. **trainControl** is used to do this. **Boot** is the default and needs to be changed to **repeatedcv**. For repeated cross validation.
+
+```{r}
+ctrl <- trainControl(method = "repeatedcv", repeats = 3)
+
+plsFit <- train(Class ~., data = training, method = "pls", preProc = c("center", "scale"),
+                tuneLength = 15,
+                ## added:
+                trControl = ctrl
+                )
+```
+
+
+> Now a different method of measuring the performance is used.
+
+```{r}
+ctrl <- trainControl(
+  method = "repeatedcv",
+  repeats = 3,
+  classProbs = TRUE,
+  summaryFunction = twoClassSummary
+)
+
+set.seed(123)
+plsFit <- train(Class~., data = training, method = "pls", preProc = c("center", "scale"),
+                tuneLenth = 15, trControl = ctrl, metric = "ROC"
+                )
+plsFit
+```
+
