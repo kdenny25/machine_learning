@@ -94,8 +94,55 @@ ctrl <- trainControl(
 
 set.seed(123)
 plsFit <- train(Class~., data = training, method = "pls", preProc = c("center", "scale"),
-                tuneLenth = 15, trControl = ctrl, metric = "ROC"
+                tuneLength = 15, trControl = ctrl, metric = "ROC"
                 )
 plsFit
 ```
+
+> The output is the average resampled estimates of performance. At the bottom where it states the final value used for the model is 3. 3 being the most optimal resampling rate.
+
+> Displaying the result of the training in a **ggplot** can show the relationship to the performance of cross-validation and the number of PLS components.
+
+```{r}
+ggplot(plsFit)
+```
+
+> Testing the training data comes next. The data that was partitioned from the original batch and labeled testing will be used to see if this model can predict new samples.
+
+```{r}
+plsClasses <- predict(plsFit, newdata = testing)
+str(plsClasses)
+#> Factor w/ 2 levels "M", "R": 2 1 1 1 1 2 2 1 2 2 2...
+plsProbs <- predict(plsFit, newdata = testing, type = "prob")
+head(plsProbs)
+```
+
+> The confusion matrix can break down the statistics for the model fit.
+
+```{r}
+confusionMatrix(data = plsClasses, testing$Class)
+```
+
+> Minor changes can be made to the **train** function to invoke new models. Below will utilize the regularized discriminant model.
+
+```{r}
+## To illustrate, a custom grid is used
+rdaGrid = data.frame(gamma = (0:4)/4, lambda = 3/4)
+set.seed(123)
+rdaFit <- train(Class~., data = training, method = "rda", tuneGrid = rdaGrid,
+                trControl = ctrl, metric = "ROC"
+                )
+rdaFit
+
+rdaClasses <- predict(rdaFit, newdata = testing)
+confusionMatrix(rdaClasses, testing$Class)
+```
+
+> The two models can be compared using the **resamples** function.
+
+```{r}
+resamps <- resamples(list(pls = plsFit, rda = rdaFit))
+summary(resamps)
+```
+
 
