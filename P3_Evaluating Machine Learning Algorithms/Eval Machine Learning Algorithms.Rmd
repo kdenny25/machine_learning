@@ -32,6 +32,9 @@ library(caret)
 filepath <- paste(getwd(), "/data/pima-indians-diabetes.csv", sep="")
 # load data
 dataset <- read.csv(filepath, header = FALSE)
+# add header names
+colnames(dataset) <- c("pregnant", "glucose", "pressure", "triceps", "insulin", "mass", "pedigree", "age", "diabetes")
+dataset$diabetes=factor(dataset$diabetes, level=c(0,1))
 ```
 
 > At this point the tutorial jumps right into test options and skips a couple steps. For the sake of developing my understanding I will be inserting a couple steps. The first step is to partition the data into a training data set and a validation data set. The training data set is used to train the model and the validation data set will be used to check whether the chosen model works.
@@ -39,7 +42,7 @@ dataset <- read.csv(filepath, header = FALSE)
 ```{r}
 set.seed(123)
 
-validation_index <- createDataPartition(y = dataset$V9, p = .8, list = FALSE)
+validation_index <- createDataPartition(y = dataset$diabetes, p = .8, list = FALSE)
 
 # Assign partions
 training <- dataset[validation_index, ]
@@ -49,3 +52,145 @@ nrow(training)
 
 nrow(validation)
 ```
+
+**Visualize the Data**
+
+> First seperate the data into inputs (x) and outputs (y)
+
+```{r}
+# create input and output dataset
+x <- dataset[,1:8]
+y <- dataset[,9]
+```
+
+> Now looking at a boxplot of each input.
+
+```{r}
+# create boxplot of each input
+par(mfrow = c(1,8))
+  for(i in 1:8){
+    boxplot(x[,i])
+  }
+```
+
+```{r}
+summary(training)
+```
+
+> Ok now checking a ellipse plot
+
+```{r}
+# scatter plot matrix
+featurePlot(x=x, y=y, plot="ellipse")
+```
+
+> Alright, so maybe looking at plots the same way is not the method with this dataset. Moving on.
+
+**Test Options**
+
+> Recommended test options are.
++ Train/Test split: If you have a lot of data and determine you need a lot of data to build accurate models.
++ Cross Validation: 5 fold or 10 fold provide a commonly used tradeoff of speed of compute time and generalize error estimate.
++ Repeated Cross Validation: 5 or 10 fold cross validation and 3 or more repeats to give a more robust estimate, only if you have a small dataset and can afford the time.
+
+
+> This example uses 10-fold cross validation with 3 repeats.
+
+```{r}
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+seed <- 7
+```
+
+**Test Metric**
+
+> Some examples of good test metrics to use is provided.
+
+**Classification**
++ Accuracy: x correct divided by y total instances. Easy to understand and widely used.
++ Kappa: easily understood as accuracy that takes the  base distribution of classes into account.
+
+**Regression**
++ RMSE: root mean squared error. Again, easy to understand and widely used.
++ Rsquared: the goodness of fit or coefficient of determination.
+
+> Accuracy is used in this example, so we will define that method now.
+
+```{r}
+# define test metric
+metric <- "Accuracy"
+```
+
+
+**Model Building**
+
+> In the case of binary classification it is recommended to use the following types of algorithms.
+
++ Linear methods: Linear Discrimination Analysis and Logitic Regression.
++ Non-Linear methods: Nearual Networks, SVM, kNN and Naive Bayes
++ Trees and Rules: CART, J48 and PART
++ Ensembles of Trees: C5.0, Bagged CART, Random Forest and Stochastic Gradient
+
+> This tutorial recommends at least 10-to-20 different algorithms be tested.
+
+**Algorithm Configuration**
+
+> It is recommended to use the defaults that are provided by CARET when initially spot checking algorithms.
+
+**Data Preprocessing**
+
+> Data preprocessing can help improve the performance of some algorithms. So it is important to be aware of what requirements need to be fulfilled prior to apllying the data to the algrithm and have preprocessing methods in place prior to execution. **train()** actually lets you define preprocessing of the data prior to training. The most useful transform is to scale and center the data, as shown below.
+
+```{r}
+preProcess = c("center", "scale")
+```
+
+**Algorithm Spot Check**
+
+> This contains the algorithms that will be spot checked.
+
+```{r}
+# linear discrimant Analysis
+set.seed(seed)
+fit.lda <- train(diabetes~., data=training, method="lda", metric=metric, preProc=c("center", "scale"), trControl=control)
+# logistic regression
+set.seed(seed)
+fit.glm <- train(diabetes~., data=training, method="glm", metric=metric, trControl=control)
+# GLMNET
+set.seed(seed)
+fit.glmnet <- train(diabetes~., data=training, method="glmnet", metric=metric, preProc=c("center", "scale"), trControl=control)
+# SVM Radial
+set.seed(seed)
+fit.svmRadial <- train(diabetes~., data=training, method="svmRadial", metric=metric, preProc=c("center", "scale"), trControl=control, fit=FALSE)
+# kNN
+set.seed(seed)
+fit.knn <- train(diabetes~., data=training, method="knn", metric=metric, preProc=c("center", "scale"), trControl=control)
+# Naive Bayes
+set.seed(seed)
+fit.nb <- train(diabetes~., data=training, method="nb", metric=metric, trContrtol=control)
+# CART
+set.seed(seed)
+fit.cart <- train(diabetes~., data=training, method="rpart", metric=metric, trControl=control)
+# C5.0
+set.seed(seed)
+fit.c50 <- train(diabetes~., data=training, method="C5.0", metric=metric, trControl=control)
+# Bagged CART
+set.seed(seed)
+fit.treebag <- train(diabetes~., data=training, method="treebag", metric=metric, trControl=control)
+# Random Forest
+set.seed(seed)
+fit.rf <- train(diabetes~., data=training, method="rf", metric=metric, trControl=control)
+# Stochastic Gradient Boosting (Generalized Boostewd Modeling)
+set.seed(seed)
+fit.gbm <- train(diabetes~., data=training, method="gbm", metric=metric, trControl=control, verbose=FALSE)
+```
+
+**Model Selection**
+
+> Now it is time to evaluate the models. This doesn't mean find the best model, because these models have not been tuned, but we need to grab a couple and investigate the results.
+
+```{r}
+results <- resamples(list(lda=fit.lda, logistic=fit.glm, glmnet=fit.glmnet, svm=fit.svmRadial, knn=fit.knn, nb=fit.nb, cart=fit.cart, c50=fit.c50, bagging=fit.treebag, rf=fit.rf, gbm=fit.gbm))
+# Table comparison
+summary(results)
+```
+
