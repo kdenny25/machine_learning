@@ -29,10 +29,6 @@ inTrain <- createDataPartition(
 ## The output is a set of integers fro the rows of Sonar
 ## that belong in the training set.
 str(inTrain)
-#> int [1:157, 1] 1 2 3 4 5 7
-#> - attr(*, "dimnames")=list of 2
-#> ..$ : NULL
-#> ..$ : chr "Resample1"
 ```
 
 > **createDataPartition** does a stratified random split of the data.

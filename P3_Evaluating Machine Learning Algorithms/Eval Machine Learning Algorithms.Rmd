@@ -1,0 +1,51 @@
+---
+title: "Evaluating Machine Learning Algorithms"
+output: html_notebook
+---
+
+> This is a tutorial provided by machinelearningmastery.com. Walking through the tutorial is intended to provide me with a better understanding of the machine learning process.
+
+> The purpose of this tutorial is determining which algorithm provides the most accurate model for the data set.The method describe is the use of trial and error.
+
+> There are 3 sections to the tutorial.
++ Defining a test harness
++ Building multiple predictive models from the data
++ Comparing models and selecting a short list
+
+**Test Harness**
+
+> The test harness is comprised of three key elements.
+1. The dataset we will use to train models.
+2. The test options used to evaluate a model (resampling method)
+3. The metric we are interested in measuring and comparing.
+
+> Rule of thumb when spot checking is that each algorithm should train within 1-to-2 minutes. Less than 10,000 rows is a good dataset size.
+
+> Start by loading up the libraries and the dataset.
+
+```{r}
+# load libraries
+library(mlbench)
+library(caret)
+
+# assign filepath
+filepath <- paste(getwd(), "/data/pima-indians-diabetes.csv", sep="")
+# load data
+dataset <- read.csv(filepath, header = FALSE)
+```
+
+> At this point the tutorial jumps right into test options and skips a couple steps. For the sake of developing my understanding I will be inserting a couple steps. The first step is to partition the data into a training data set and a validation data set. The training data set is used to train the model and the validation data set will be used to check whether the chosen model works.
+
+```{r}
+set.seed(123)
+
+validation_index <- createDataPartition(y = dataset$V9, p = .8, list = FALSE)
+
+# Assign partions
+training <- dataset[validation_index, ]
+validation <- dataset[-validation_index, ]
+
+nrow(training)
+
+nrow(validation)
+```
